@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Suraj's Job Intelligence Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0F1E3C;
+    --navy2: #162847;
+    --blue: #1A5FCC;
+    --accent: #3B82F6;
+    --cyan: #06B6D4;
+    --gold: #F59E0B;
+    --surface: #111827;
+    --surface2: #1C2A42;
+    --surface3: #243352;
+    --border: rgba(59,130,246,0.18);
+    --text: #E8EEF8;
+    --muted: #7B92B8;
+    --success: #10B981;
+    --warning: #F59E0B;
+    --remote: #8B5CF6;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--navy);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Animated background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 20% 10%, rgba(26,95,204,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 90%, rgba(6,182,212,0.08) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, #0a1628 0%, #0F1E3C 50%, #0d1f3d 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 0;
+  }
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .logo-icon {
+    width: 42px; height: 42px;
+    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    box-shadow: 0 4px 15px rgba(59,130,246,0.35);
+  }
+  .logo-text { font-family: 'Syne', sans-serif; }
+  .logo-text h1 { font-size: 17px; font-weight: 800; color: var(--text); line-height: 1; }
+  .logo-text p { font-size: 11px; color: var(--muted); margin-top: 2px; letter-spacing: 0.05em; }
+
+  .profile-pill {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    padding: 6px 14px 6px 8px;
+    font-size: 12px;
+  }
+  .profile-avatar {
+    width: 26px; height: 26px;
+    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    padding: 16px 20px 0;
+    max-width: 1100px;
+    margin: 0 auto;
+    overflow-x: auto;
+  }
+  .tab {
+    padding: 9px 18px;
+    border-radius: 8px 8px 0 0;
+    border: 1px solid transparent;
+    border-bottom: none;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    background: transparent;
+    color: var(--muted);
+  }
+  .tab:hover { color: var(--text); background: var(--surface2); }
+  .tab.active {
+    background: var(--surface);
+    color: var(--accent);
+    border-color: var(--border);
+    font-weight: 600;
+  }
+
+  /* MAIN CONTENT */
+  .main {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 12px 12px 12px;
+    margin: 0 20px 30px;
+    max-width: 1060px;
+    margin-left: auto;
+    margin-right: auto;
+    overflow: hidden;
+  }
+
+  .panel { display: none; padding: 24px; }
+  .panel.active { display: block; }
+
+  /* SEARCH PANEL */
+  .search-hero {
+    background: linear-gradient(135deg, var(--surface2), var(--surface3));
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+  .search-hero h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 6px;
+  }
+  .search-hero h2 span { color: var(--cyan); }
+  .search-hero p { color: var(--muted); font-size: 13px; margin-bottom: 20px; }
+
+  .search-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  @media (max-width: 600px) { .search-grid { grid-template-columns: 1fr; } }
+
+  .field-group { display: flex; flex-direction: column; gap: 5px; }
+  .field-group label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .field-group select,
+  .field-group input {
+    background: var(--navy);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    padding: 10px 12px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .field-group select:focus,
+  .field-group input:focus { border-color: var(--accent); }
+  .field-group select option { background: var(--navy); }
+
+  .tags-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+  .tag {
+    background: rgba(59,130,246,0.12);
+    border: 1px solid rgba(59,130,246,0.3);
+    color: var(--accent);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .tag:hover, .tag.on { background: rgba(59,130,246,0.25); border-color: var(--accent); }
+  .tag.on { color: #fff; }
+
+  .btn-search {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--blue), #1d6fd4);
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    box-shadow: 0 4px 20px rgba(26,95,204,0.4);
+  }
+  .btn-search:hover { transform: translateY(-1px); box-shadow: 0 6px 25px rgba(26,95,204,0.5); }
+  .btn-search:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  /* LOADING */
+  .loading-state {
+    display: none;
+    text-align: center;
+    padding: 40px 20px;
+  }
+  .loading-state.show { display: block; }
+  .spinner {
+    width: 40px; height: 40px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-steps { display: flex; flex-direction: column; gap: 8px; max-width: 300px; margin: 0 auto; }
+  .loading-step {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; color: var(--muted);
+    opacity: 0;
+    animation: fadeIn 0.4s forwards;
+  }
+  .loading-step.done { color: var(--success); }
+  .step-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+  @keyframes fadeIn { to { opacity: 1; } }
+
+  /* RESULTS */
+  .results-area { display: none; }
+  .results-area.show { display: block; }
+
+  .results-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px;
+    flex-wrap: wrap; gap: 8px;
+  }
+  .results-count { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; }
+  .results-count span { color: var(--cyan); }
+
+  .filter-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+  .filter-pill {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px; font-weight: 600;
+    border: 1px solid;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-pill.all { background: rgba(59,130,246,0.15); border-color: var(--accent); color: var(--accent); }
+  .filter-pill.remote { background: rgba(139,92,246,0.12); border-color: var(--remote); color: var(--remote); }
+  .filter-pill.freelance { background: rgba(245,158,11,0.12); border-color: var(--gold); color: var(--gold); }
+  .filter-pill.active-f { opacity: 1; } .filter-pill { opacity: 0.6; }
+  .filter-pill:hover, .filter-pill.active-f { opacity: 1; }
+
+  .jobs-list { display: flex; flex-direction: column; gap: 12px; }
+
+  .job-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    transition: all 0.2s;
+    cursor: pointer;
+    animation: slideUp 0.3s ease both;
+  }
+  .job-card:hover { border-color: rgba(59,130,246,0.4); transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+  @keyframes slideUp { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: translateY(0); } }
+
+  .job-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+  .job-title { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; line-height: 1.3; }
+  .job-company { font-size: 13px; color: var(--accent); font-weight: 500; margin-top: 3px; }
+
+  .job-badges { display: flex; flex-wrap: wrap; gap: 5px; flex-shrink: 0; }
+  .badge {
+    padding: 3px 9px;
+    border-radius: 12px;
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  .badge.remote { background: rgba(139,92,246,0.2); color: #A78BFA; border: 1px solid rgba(139,92,246,0.3); }
+  .badge.freelance { background: rgba(245,158,11,0.2); color: #FCD34D; border: 1px solid rgba(245,158,11,0.3); }
+  .badge.fulltime { background: rgba(16,185,129,0.2); color: #6EE7B7; border: 1px solid rgba(16,185,129,0.3); }
+  .badge.contract { background: rgba(6,182,212,0.2); color: #67E8F9; border: 1px solid rgba(6,182,212,0.3); }
+  .badge.hot { background: rgba(239,68,68,0.2); color: #FCA5A5; border: 1px solid rgba(239,68,68,0.3); }
+
+  .job-meta { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 10px; }
+  .job-meta-item { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 4px; }
+  .job-meta-item .ico { font-size: 13px; }
+
+  .job-desc { font-size: 13px; color: #9BAECC; line-height: 1.6; margin-bottom: 12px; }
+
+  .job-skills { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; }
+  .skill-chip {
+    background: rgba(15,30,60,0.8);
+    border: 1px solid rgba(59,130,246,0.2);
+    color: #7BAED4;
+    padding: 3px 9px;
+    border-radius: 6px;
+    font-size: 11px;
+  }
+  .skill-chip.match { border-color: rgba(16,185,129,0.4); color: #6EE7B7; background: rgba(16,185,129,0.08); }
+
+  .job-footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+  .match-score {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 600;
+  }
+  .match-bar {
+    width: 80px; height: 5px;
+    background: var(--navy);
+    border-radius: 3px; overflow: hidden;
+  }
+  .match-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--blue), var(--cyan)); }
+
+  .job-actions { display: flex; gap: 6px; }
+  .btn-apply {
+    padding: 7px 16px;
+    background: linear-gradient(135deg, var(--blue), #1d6fd4);
+    border: none; border-radius: 7px;
+    color: #fff; font-size: 12px; font-weight: 600;
+    cursor: pointer; transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .btn-apply:hover { opacity: 0.9; }
+  .btn-save {
+    padding: 7px 12px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    color: var(--muted); font-size: 12px;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .btn-save:hover { border-color: var(--gold); color: var(--gold); }
+  .btn-save.saved { border-color: var(--gold); color: var(--gold); background: rgba(245,158,11,0.1); }
+
+  .source-tag {
+    font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+    padding: 2px 8px; border-radius: 4px;
+  }
+  .source-tag.linkedin { background: rgba(10,102,194,0.2); color: #60A5FA; border: 1px solid rgba(10,102,194,0.3); }
+  .source-tag.naukri { background: rgba(239,68,68,0.15); color: #FCA5A5; border: 1px solid rgba(239,68,68,0.25); }
+  .source-tag.indeed { background: rgba(16,185,129,0.15); color: #6EE7B7; border: 1px solid rgba(16,185,129,0.25); }
+  .source-tag.glassdoor { background: rgba(245,158,11,0.15); color: #FCD34D; border: 1px solid rgba(245,158,11,0.25); }
+  .source-tag.upwork { background: rgba(139,92,246,0.15); color: #A78BFA; border: 1px solid rgba(139,92,246,0.25); }
+
+  /* TRACKER PANEL */
+  .tracker-top {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 20px; flex-wrap: wrap; gap: 10px;
+  }
+  .tracker-top h2 { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; }
+
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 24px; }
+  @media (max-width: 600px) { .stats-row { grid-template-columns: repeat(2, 1fr); } }
+  .stat-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px;
+    text-align: center;
+  }
+  .stat-num { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; }
+  .stat-label { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  .add-job-form {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px; padding: 18px;
+    margin-bottom: 20px;
+  }
+  .add-job-form h3 { font-size: 14px; font-weight: 600; margin-bottom: 14px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 10px; align-items: end; }
+  @media (max-width: 700px) { .form-row { grid-template-columns: 1fr 1fr; } }
+  .form-row input, .form-row select {
+    background: var(--navy); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text);
+    padding: 9px 12px; font-size: 13px;
+    font-family: 'DM Sans', sans-serif; outline: none;
+  }
+  .form-row input:focus, .form-row select:focus { border-color: var(--accent); }
+  .btn-add {
+    padding: 9px 18px;
+    background: var(--blue); border: none; border-radius: 8px;
+    color: #fff; font-size: 13px; font-weight: 600;
+    cursor: pointer; white-space: nowrap;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .tracker-table { width: 100%; border-collapse: collapse; }
+  .tracker-table th {
+    text-align: left; font-size: 11px; font-weight: 600; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    padding: 10px 12px; border-bottom: 1px solid var(--border);
+  }
+  .tracker-table td {
+    padding: 12px 12px; font-size: 13px;
+    border-bottom: 1px solid rgba(59,130,246,0.08);
+    vertical-align: middle;
+  }
+  .tracker-table tr:hover td { background: rgba(59,130,246,0.04); }
+
+  .status-pill {
+    padding: 3px 10px; border-radius: 20px;
+    font-size: 11px; font-weight: 600;
+    display: inline-block;
+  }
+  .status-applied { background: rgba(59,130,246,0.15); color: #93C5FD; }
+  .status-interview { background: rgba(245,158,11,0.15); color: #FCD34D; }
+  .status-offer { background: rgba(16,185,129,0.15); color: #6EE7B7; }
+  .status-rejected { background: rgba(239,68,68,0.15); color: #FCA5A5; }
+  .status-saved { background: rgba(139,92,246,0.15); color: #A78BFA; }
+
+  .btn-del { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 14px; padding: 2px 6px; border-radius: 4px; }
+  .btn-del:hover { color: #EF4444; background: rgba(239,68,68,0.1); }
+
+  /* LINKEDIN POSTS */
+  .post-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px; padding: 18px;
+    margin-bottom: 12px;
+    animation: slideUp 0.3s ease both;
+  }
+  .post-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .post-avatar {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px; flex-shrink: 0;
+  }
+  .post-author { font-weight: 600; font-size: 14px; }
+  .post-role { font-size: 12px; color: var(--muted); }
+  .post-time { font-size: 11px; color: var(--muted); margin-left: auto; }
+  .post-body { font-size: 13px; line-height: 1.7; color: #9BAECC; margin-bottom: 12px; }
+  .post-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+  .post-tag {
+    background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.2);
+    color: var(--accent); padding: 2px 8px; border-radius: 4px;
+    font-size: 11px;
+  }
+  .post-relevance {
+    display: flex; align-items: center; gap: 6px; margin-top: 10px;
+    font-size: 11px; color: var(--muted);
+  }
+
+  /* PROFILE PANEL */
+  .profile-section {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px;
+    margin-bottom: 16px;
+  }
+  .profile-section h3 { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; margin-bottom: 14px; color: var(--cyan); text-transform: uppercase; letter-spacing: 0.05em; }
+  .profile-field { margin-bottom: 12px; }
+  .profile-field label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 5px; }
+  .profile-field input, .profile-field textarea {
+    width: 100%; background: var(--navy);
+    border: 1px solid var(--border); border-radius: 8px;
+    color: var(--text); padding: 10px 12px;
+    font-size: 13px; font-family: 'DM Sans', sans-serif;
+    outline: none; resize: vertical;
+  }
+  .profile-field input:focus, .profile-field textarea:focus { border-color: var(--accent); }
+  .btn-save-profile {
+    padding: 10px 24px; background: var(--blue);
+    border: none; border-radius: 8px; color: #fff;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .empty-state {
+    text-align: center; padding: 40px 20px; color: var(--muted);
+  }
+  .empty-state .e-icon { font-size: 40px; margin-bottom: 12px; opacity: 0.4; }
+  .empty-state p { font-size: 14px; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--navy); }
+  ::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 3px; }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 20px; right: 20px;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px 18px;
+    font-size: 13px; color: var(--text);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    z-index: 1000;
+    transform: translateY(20px); opacity: 0;
+    transition: all 0.3s;
+    pointer-events: none;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">🎯</div>
+      <div class="logo-text">
+        <h1>Job Intelligence Hub</h1>
+        <p>AI-POWERED · WORLDWIDE · REAL-TIME</p>
+      </div>
+    </div>
+    <div class="profile-pill">
+      <div class="profile-avatar">SS</div>
+      Suraj Shrivastav · Atlassian Architect
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('search')">🔍 Find Jobs</button>
+    <button class="tab" onclick="switchTab('linkedin')">💼 LinkedIn Buzz</button>
+    <button class="tab" onclick="switchTab('tracker')">📋 My Tracker</button>
+    <button class="tab" onclick="switchTab('profile')">⚙️ My Profile</button>
+  </div>
+</header>
+
+<div style="max-width:1100px;margin:0 auto;padding:0 20px;">
+<div class="main">
+
+  <!-- SEARCH PANEL -->
+  <div id="panel-search" class="panel active">
+    <div class="search-hero">
+      <h2>Find Your Next <span>Senior Role</span></h2>
+      <p>AI searches worldwide across Naukri, LinkedIn, Indeed, Glassdoor, Upwork & more — filtered for your exact profile</p>
+
+      <div class="search-grid">
+        <div class="field-group">
+          <label>Job Type</label>
+          <select id="jobType">
+            <option value="all">All Types</option>
+            <option value="fulltime">Full-time</option>
+            <option value="remote">Remote</option>
+            <option value="freelance">Freelance / Contract</option>
+            <option value="consulting">Consulting</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label>Location</label>
+          <select id="location">
+            <option value="worldwide">🌍 Worldwide</option>
+            <option value="india">🇮🇳 India</option>
+            <option value="delhincr">Delhi NCR / Gurgaon</option>
+            <option value="remote">Remote Only</option>
+            <option value="us">🇺🇸 USA</option>
+            <option value="uk">🇬🇧 UK / Europe</option>
+            <option value="apac">🌏 APAC / Singapore</option>
+            <option value="middleeast">🇦🇪 Middle East / UAE</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label>Experience Level</label>
+          <select id="expLevel">
+            <option value="senior">Senior (10-15 yrs)</option>
+            <option value="lead">Lead / Manager</option>
+            <option value="architect">Architect / Principal</option>
+            <option value="head">Head / Director</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label>Custom Keywords (optional)</label>
+          <input type="text" id="customKeywords" placeholder="e.g. JSM, ScriptRunner, ITIL..." />
+        </div>
+      </div>
+
+      <div style="margin-bottom:12px;">
+        <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:7px;">Focus Areas (click to toggle)</div>
+        <div class="tags-row" id="focusTags">
+          <span class="tag on" data-val="Atlassian">Atlassian</span>
+          <span class="tag on" data-val="Jira Service Management">JSM</span>
+          <span class="tag on" data-val="ITSM">ITSM</span>
+          <span class="tag on" data-val="Confluence">Confluence</span>
+          <span class="tag on" data-val="ITIL">ITIL</span>
+          <span class="tag on" data-val="Jira Align">Jira Align</span>
+          <span class="tag" data-val="ScriptRunner">ScriptRunner</span>
+          <span class="tag" data-val="ISO 27001">ISO 27001</span>
+          <span class="tag" data-val="Cloud Migration">Cloud Migration</span>
+          <span class="tag" data-val="IAM">IAM / SSO</span>
+          <span class="tag" data-val="Atlassian Guard">Atlassian Guard</span>
+          <span class="tag" data-val="Freelance Atlassian">Freelance</span>
+        </div>
+      </div>
+
+      <button class="btn-search" id="searchBtn" onclick="runSearch()">
+        <span>🚀</span> Search Worldwide Jobs
+      </button>
+    </div>
+
+    <div class="loading-state" id="loadingState">
+      <div class="spinner"></div>
+      <p style="color:var(--muted);font-size:13px;margin-bottom:16px;">AI is scanning job boards worldwide for your profile...</p>
+      <div class="loading-steps" id="loadingSteps"></div>
+    </div>
+
+    <div class="results-area" id="resultsArea">
+      <div class="results-header">
+        <div class="results-count">Found <span id="resultCount">0</span> matching roles</div>
+        <div class="filter-pills">
+          <span class="filter-pill all active-f" onclick="filterResults('all',this)">All</span>
+          <span class="filter-pill remote" onclick="filterResults('remote',this)">Remote</span>
+          <span class="filter-pill freelance" onclick="filterResults('freelance',this)">Freelance</span>
+        </div>
+      </div>
+      <div class="jobs-list" id="jobsList"></div>
+    </div>
+  </div>
+
+  <!-- LINKEDIN PANEL -->
+  <div id="panel-linkedin" class="panel">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
+      <div>
+        <h2 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;">LinkedIn Intelligence</h2>
+        <p style="font-size:13px;color:var(--muted);margin-top:4px;">Job posts, recruiter activity & industry buzz relevant to your profile</p>
+      </div>
+      <button class="btn-search" style="width:auto;padding:10px 20px;font-size:13px;" onclick="fetchLinkedInPosts()">
+        🔄 Refresh Posts
+      </button>
+    </div>
+    <div id="linkedinLoading" class="loading-state">
+      <div class="spinner"></div>
+      <p style="color:var(--muted);font-size:13px;">Fetching relevant LinkedIn activity...</p>
+    </div>
+    <div id="linkedinPosts"></div>
+  </div>
+
+  <!-- TRACKER PANEL -->
+  <div id="panel-tracker" class="panel">
+    <div class="tracker-top">
+      <h2>Application Tracker</h2>
+    </div>
+    <div class="stats-row" id="trackerStats">
+      <div class="stat-card"><div class="stat-num" id="s-saved" style="color:var(--remote)">0</div><div class="stat-label">Saved</div></div>
+      <div class="stat-card"><div class="stat-num" id="s-applied" style="color:var(--accent)">0</div><div class="stat-label">Applied</div></div>
+      <div class="stat-card"><div class="stat-num" id="s-interview" style="color:var(--gold)">0</div><div class="stat-label">Interviews</div></div>
+      <div class="stat-card"><div class="stat-num" id="s-offer" style="color:var(--success)">0</div><div class="stat-label">Offers</div></div>
+    </div>
+    <div class="add-job-form">
+      <h3>+ Add Application</h3>
+      <div class="form-row">
+        <input type="text" id="t-title" placeholder="Job Title" />
+        <input type="text" id="t-company" placeholder="Company" />
+        <select id="t-status">
+          <option value="saved">Saved</option>
+          <option value="applied">Applied</option>
+          <option value="interview">Interview</option>
+          <option value="offer">Offer</option>
+          <option value="rejected">Rejected</option>
+        </select>
+        <button class="btn-add" onclick="addTrackerItem()">Add</button>
+      </div>
+      <div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+        <input type="text" id="t-location" placeholder="Location / Remote" style="background:var(--navy);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:9px 12px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;" />
+        <input type="text" id="t-salary" placeholder="Salary / Rate" style="background:var(--navy);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:9px 12px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;" />
+        <input type="url" id="t-url" placeholder="Job URL (optional)" style="background:var(--navy);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:9px 12px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;" />
+      </div>
+    </div>
+    <div id="trackerEmpty" class="empty-state">
+      <div class="e-icon">📋</div>
+      <p>No applications tracked yet. Start by searching for jobs and saving ones you like!</p>
+    </div>
+    <table class="tracker-table" id="trackerTable" style="display:none;">
+      <thead>
+        <tr>
+          <th>Role</th><th>Company</th><th>Location</th><th>Salary</th><th>Status</th><th>Date</th><th></th>
+        </tr>
+      </thead>
+      <tbody id="trackerBody"></tbody>
+    </table>
+  </div>
+
+  <!-- PROFILE PANEL -->
+  <div id="panel-profile" class="panel">
+    <div style="margin-bottom:20px;">
+      <h2 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;">My Search Profile</h2>
+      <p style="font-size:13px;color:var(--muted);margin-top:4px;">This profile is baked into every AI search. Keep it updated for better results.</p>
+    </div>
+    <div class="profile-section">
+      <h3>Identity</h3>
+      <div class="profile-field"><label>Full Name</label><input type="text" id="p-name" value="Suraj Shrivastav" /></div>
+      <div class="profile-field"><label>Current Title</label><input type="text" id="p-title" value="Atlassian Solution Architect" /></div>
+      <div class="profile-field"><label>Years Experience</label><input type="text" id="p-exp" value="12 years" /></div>
+      <div class="profile-field"><label>Current Company</label><input type="text" id="p-company" value="Forcepoint" /></div>
+    </div>
+    <div class="profile-section">
+      <h3>Skills & Expertise</h3>
+      <div class="profile-field"><label>Core Skills (comma separated)</label>
+        <textarea id="p-skills" rows="3">Jira, Jira Service Management, Confluence, Assets/Insight, Data Manager, Jira Align, Jira Product Discovery, Atlassian Guard, ScriptRunner, ITSM, ITIL, ISO 27001, SSO, SAML, OAuth, RBAC, Cloud Migration, REST API, EazyBI, PagerDuty, Okta, Salesforce</textarea>
+      </div>
+      <div class="profile-field"><label>Certifications</label>
+        <input type="text" id="p-certs" value="ACP-600 (JSM), ACP-120 (Jira Cloud Admin)" />
+      </div>
+    </div>
+    <div class="profile-section">
+      <h3>Job Preferences</h3>
+      <div class="profile-field"><label>Target Roles</label>
+        <textarea id="p-roles" rows="2">Head of Atlassian Practice, ITSM Platform Lead, Enterprise Tooling Manager, IT Governance Lead, Atlassian CoE Lead, Senior Atlassian Architect</textarea>
+      </div>
+      <div class="profile-field"><label>Expected Salary / Rate</label>
+        <input type="text" id="p-salary" value="₹30-50L full-time | $60-100/hr freelance" />
+      </div>
+      <div class="profile-field"><label>Open To</label>
+        <input type="text" id="p-open" value="India, Remote worldwide, UAE, Singapore, UK" />
+      </div>
+    </div>
+    <button class="btn-save-profile" onclick="saveProfile()">💾 Save Profile</button>
+  </div>
+
+</div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── STATE ──
+let trackerItems = JSON.parse(localStorage.getItem('tracker') || '[]');
+let savedJobs = JSON.parse(localStorage.getItem('savedJobs') || '[]');
+let allResults = [];
+
+// ── TABS ──
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    const ids = ['search','linkedin','tracker','profile'];
+    t.classList.toggle('active', ids[i] === name);
+  });
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  if (name === 'tracker') renderTracker();
+  if (name === 'linkedin') { if (!document.getElementById('linkedinPosts').innerHTML) fetchLinkedInPosts(); }
+}
+
+// ── TAG TOGGLE ──
+document.querySelectorAll('#focusTags .tag').forEach(t => {
+  t.addEventListener('click', () => t.classList.toggle('on'));
+});
+
+// ── PROFILE BUILDER ──
+function getProfile() {
+  return {
+    name: document.getElementById('p-name').value,
+    title: document.getElementById('p-title').value,
+    exp: document.getElementById('p-exp').value,
+    company: document.getElementById('p-company').value,
+    skills: document.getElementById('p-skills').value,
+    certs: document.getElementById('p-certs').value,
+    roles: document.getElementById('p-roles').value,
+    salary: document.getElementById('p-salary').value,
+    openTo: document.getElementById('p-open').value,
+  };
+}
+
+function saveProfile() {
+  localStorage.setItem('profile', JSON.stringify(getProfile()));
+  showToast('✅ Profile saved!');
+}
+
+// ── SEARCH ──
+async function runSearch() {
+  const btn = document.getElementById('searchBtn');
+  const loading = document.getElementById('loadingState');
+  const results = document.getElementById('resultsArea');
+
+  btn.disabled = true;
+  loading.classList.add('show');
+  results.classList.remove('show');
+
+  const jobType = document.getElementById('jobType').value;
+  const location = document.getElementById('location').value;
+  const expLevel = document.getElementById('expLevel').value;
+  const custom = document.getElementById('customKeywords').value;
+  const activeTags = [...document.querySelectorAll('#focusTags .tag.on')].map(t => t.dataset.val);
+  const profile = getProfile();
+
+  const steps = [
+    'Analysing your profile & keywords...',
+    'Live searching LinkedIn Jobs...',
+    'Live searching Naukri & Indeed...',
+    'Scanning Glassdoor & Upwork...',
+    'Fetching real job URLs...',
+    'Scoring match quality & compiling...'
+  ];
+
+  const stepsEl = document.getElementById('loadingSteps');
+  stepsEl.innerHTML = '';
+  steps.forEach((s, i) => {
+    const d = document.createElement('div');
+    d.className = 'loading-step';
+    d.style.animationDelay = (i * 0.5) + 's';
+    d.innerHTML = `<span class="step-dot"></span>${s}`;
+    stepsEl.appendChild(d);
+  });
+
+  // Build search queries based on filters
+  const locationMap = {
+    worldwide: 'worldwide India remote UAE UK USA Singapore',
+    india: 'India',
+    delhincr: 'Delhi NCR Gurgaon Noida',
+    remote: 'remote',
+    us: 'USA',
+    uk: 'UK Europe',
+    apac: 'Singapore APAC',
+    middleeast: 'UAE Middle East'
+  };
+  const locLabel = locationMap[location] || 'worldwide';
+  const typeLabel = jobType === 'freelance' ? 'freelance contract' : jobType === 'remote' ? 'remote' : '';
+  const activeTags2 = activeTags.slice(0, 4).join(' ');
+  const searchQuery = `${activeTags2} ${expLevel} job ${locLabel} ${typeLabel} ${custom || ''} 2026`.trim();
+
+  const prompt = `You are a job search AI with web search access. Search for REAL, CURRENTLY OPEN job postings for this candidate and return REAL direct apply URLs from LinkedIn Jobs, Naukri, Indeed, Glassdoor, or Upwork.
+
+CANDIDATE:
+- Title: ${profile.title}, ${profile.exp} experience
+- Ex-Atlassian Corporation employee
+- Skills: ${profile.skills}
+- Certs: ${profile.certs}
+- Target: ${profile.roles}
+- Location open to: ${profile.openTo}
+
+SEARCH PARAMETERS:
+- Keywords: ${searchQuery}
+- Job type: ${jobType}
+- Location: ${locLabel}
+- Focus: ${activeTags.join(', ')}
+
+INSTRUCTIONS:
+1. Use web_search to find real job postings on LinkedIn Jobs, Naukri, Indeed, Glassdoor, Upwork
+2. Search queries like: "Atlassian Solution Architect jobs ${locLabel} 2026", "JSM ITSM lead job ${locLabel}", "Atlassian architect freelance remote 2026"
+3. Return ONLY jobs with REAL direct URLs you found — not company homepage URLs
+4. LinkedIn job URLs look like: https://www.linkedin.com/jobs/view/XXXXXXXXX
+5. Naukri URLs look like: https://www.naukri.com/job-listings-XXXX
+6. Indeed URLs look like: https://in.indeed.com/viewjob?jk=XXXX
+7. If you cannot find a real direct URL for a job, use the best search result URL you actually found
+
+Return JSON array of 10 jobs. Each object:
+{
+  "title": "exact job title from posting",
+  "company": "company name",
+  "location": "exact location from posting",
+  "type": "fulltime|remote|freelance|contract",
+  "salary": "salary if shown, else Negotiable",
+  "posted": "when posted if shown",
+  "source": "linkedin|naukri|indeed|glassdoor|upwork",
+  "description": "2 sentences from actual job description about why it fits Suraj",
+  "skills": ["skill1","skill2","skill3","skill4","skill5"],
+  "matchSkills": ["skill1","skill2"],
+  "matchScore": number 70-99,
+  "applyUrl": "REAL direct URL to job posting you found",
+  "hot": true or false,
+  "freelanceRate": "rate if freelance else empty string"
+}`;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'anthropic-dangerous-request-check': 'I-understand-this-is-a-test-API'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 5000,
+        system: 'You are a job search AI with web search. Search for real live job postings and return real URLs. Always respond with valid JSON array only after searching. No markdown. Start with [ end with ].',
+        tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    if (!resp.ok) {
+      const errText = await resp.text();
+      console.error('API error:', resp.status, errText);
+      throw new Error('API returned ' + resp.status);
+    }
+
+    const data = await resp.json();
+
+    // Multi-turn loop to handle web_search tool use
+    let raw = '';
+    let currentData = data;
+    let messages = [{ role: 'user', content: prompt }];
+
+    for (let turn = 0; turn < 6; turn++) {
+      const textBlock = (currentData.content || []).find(b => b.type === 'text');
+      if (textBlock) { raw = textBlock.text; break; }
+
+      if (currentData.stop_reason === 'tool_use') {
+        messages.push({ role: 'assistant', content: currentData.content });
+        const toolResults = (currentData.content || [])
+          .filter(b => b.type === 'tool_use')
+          .map(b => ({ type: 'tool_result', tool_use_id: b.id, content: JSON.stringify(b.input) }));
+        if (!toolResults.length) break;
+        messages.push({ role: 'user', content: toolResults });
+
+        const next = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'anthropic-dangerous-request-check': 'I-understand-this-is-a-test-API'
+          },
+          body: JSON.stringify({
+            model: 'claude-sonnet-4-20250514',
+            max_tokens: 5000,
+            system: 'You are a job search AI. Return valid JSON array only. No markdown. Start with [ end with ].',
+            tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+            messages
+          })
+        });
+        currentData = await next.json();
+      } else break;
+    }
+
+    raw = raw.trim().replace(/```json|```/g, '').trim();
+    const match = raw.match(/\[[\s\S]*\]/);
+    if (match) raw = match[0];
+    allResults = JSON.parse(raw);
+
+    loading.classList.remove('show');
+    renderResults(allResults);
+    results.classList.add('show');
+    document.getElementById('resultCount').textContent = allResults.length;
+  } catch(e) {
+    loading.classList.remove('show');
+    console.error('Search error:', e);
+    showToast('⚠️ Search failed — check console for details');
+  }
+
+  btn.disabled = false;
+}
+
+function renderResults(jobs) {
+  const list = document.getElementById('jobsList');
+  list.innerHTML = '';
+  if (!jobs.length) {
+    list.innerHTML = '<div class="empty-state"><div class="e-icon">🔍</div><p>No results found. Try different filters.</p></div>';
+    return;
+  }
+  jobs.forEach((j, idx) => {
+    const isSaved = savedJobs.includes(j.title + j.company);
+    const card = document.createElement('div');
+    card.className = 'job-card';
+    card.style.animationDelay = (idx * 0.06) + 's';
+    card.dataset.type = j.type;
+
+    const badges = [];
+    if (j.type === 'remote') badges.push('<span class="badge remote">🌍 Remote</span>');
+    if (j.type === 'freelance') badges.push('<span class="badge freelance">💼 Freelance</span>');
+    if (j.type === 'contract') badges.push('<span class="badge contract">📝 Contract</span>');
+    if (j.type === 'fulltime') badges.push('<span class="badge fulltime">✅ Full-time</span>');
+    if (j.hot) badges.push('<span class="badge hot">🔥 Hot</span>');
+
+    const skills = (j.skills || []).map(s => {
+      const isMatch = (j.matchSkills || []).includes(s);
+      return `<span class="skill-chip ${isMatch ? 'match' : ''}">${s}</span>`;
+    }).join('');
+
+    card.innerHTML = `
+      <div class="job-top">
+        <div>
+          <div class="job-title">${j.title}</div>
+          <div class="job-company">${j.company}</div>
+        </div>
+        <div class="job-badges">${badges.join('')}</div>
+      </div>
+      <div class="job-meta">
+        <span class="job-meta-item"><span class="ico">📍</span>${j.location}</span>
+        <span class="job-meta-item"><span class="ico">💰</span>${j.salary || j.freelanceRate || 'Negotiable'}</span>
+        <span class="job-meta-item"><span class="ico">🕐</span>${j.posted}</span>
+        <span class="source-tag ${j.source}">${j.source}</span>
+      </div>
+      <div class="job-desc">${j.description}</div>
+      <div class="job-skills">${skills}</div>
+      <div class="job-footer">
+        <div class="match-score">
+          <span style="color:var(--muted)">Match</span>
+          <div class="match-bar"><div class="match-fill" style="width:${j.matchScore}%"></div></div>
+          <span style="color:var(--cyan);font-family:'Syne',sans-serif">${j.matchScore}%</span>
+        </div>
+        <div class="job-actions">
+          <button class="btn-save ${isSaved ? 'saved' : ''}" onclick="toggleSave(event,'${(j.title+j.company).replace(/'/g,"\\'")}','${j.title}','${j.company}','${j.location}','${j.salary||j.freelanceRate||''}',this)">
+            ${isSaved ? '★ Saved' : '☆ Save'}
+          </button>
+          <button class="btn-apply" onclick="applyJob(event,'${j.applyUrl}')">Apply →</button>
+        </div>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+}
+
+function filterResults(type, el) {
+  document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active-f'));
+  el.classList.add('active-f');
+  const filtered = type === 'all' ? allResults : allResults.filter(j => j.type === type);
+  renderResults(filtered);
+  document.getElementById('resultCount').textContent = filtered.length;
+}
+
+function toggleSave(e, key, title, company, location, salary, btn) {
+  e.stopPropagation();
+  const idx = savedJobs.indexOf(key);
+  if (idx === -1) {
+    savedJobs.push(key);
+    btn.classList.add('saved'); btn.textContent = '★ Saved';
+    addToTracker(title, company, location, salary, 'saved');
+    showToast('✅ Saved & added to tracker!');
+  } else {
+    savedJobs.splice(idx, 1);
+    btn.classList.remove('saved'); btn.textContent = '☆ Save';
+    showToast('Removed from saved');
+  }
+  localStorage.setItem('savedJobs', JSON.stringify(savedJobs));
+}
+
+function applyJob(e, url) {
+  e.stopPropagation();
+  if (url && url.startsWith('http')) window.open(url, '_blank');
+  else showToast('💡 Search this role on LinkedIn or Naukri');
+}
+
+// ── LINKEDIN POSTS ──
+async function fetchLinkedInPosts() {
+  const loading = document.getElementById('linkedinLoading');
+  const container = document.getElementById('linkedinPosts');
+  loading.classList.add('show');
+  container.innerHTML = '';
+  const profile = getProfile();
+  const prompt = `You are a LinkedIn intelligence AI with web search. Search LinkedIn and the web for REAL recent posts, job announcements, and hiring activity relevant to Atlassian architects and ITSM professionals in April 2026.
+
+Profile: ${profile.title}, ${profile.exp} experience, skills in Atlassian JSM Confluence ITSM ITIL IAM
+
+Search for:
+1. Real LinkedIn job posts for Atlassian/JSM/ITSM roles posted recently
+2. Real recruiters posting about hiring Atlassian professionals
+3. Real discussions about Atlassian migrations, JSM, ITSM trends
+4. Freelance Atlassian gig announcements
+5. Industry news about Atlassian platform and ITSM
+
+Return 8 items as JSON array. For each use real URLs where possible:
+[
+  {
+    "author": "person or company name",
+    "role": "their title and company",
+    "initials": "2 capital letters",
+    "time": "X hours/days ago",
+    "type": "job_post|discussion|hiring|freelance|thought_leadership",
+    "content": "actual post content or realistic paraphrase",
+    "tags": ["tag1","tag2","tag3"],
+    "relevance": "why this matters to an Atlassian Solution Architect",
+    "relevanceScore": 85,
+    "actionUrl": "real URL if found, else https://www.linkedin.com/jobs/search/?keywords=Atlassian+ITSM"
+  }
+]`;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'anthropic-dangerous-request-check': 'I-understand-this-is-a-test-API'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 5000,
+        system: 'You are a LinkedIn intelligence AI with web search. Search for real content then return valid JSON array only. No markdown. Start with [ end with ].',
+        tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    if (!resp.ok) {
+      console.error('LinkedIn API error:', resp.status, await resp.text());
+      throw new Error('API ' + resp.status);
+    }
+    const data = await resp.json();
+
+    // Extract final text block after any tool use
+    let raw = '';
+    let currentData = data;
+    let messages = [{ role: 'user', content: prompt }];
+
+    // Loop to handle tool use turns
+    for (let turn = 0; turn < 5; turn++) {
+      const textBlock = (currentData.content || []).find(b => b.type === 'text');
+      if (textBlock) { raw = textBlock.text; break; }
+
+      if (currentData.stop_reason === 'tool_use') {
+        messages.push({ role: 'assistant', content: currentData.content });
+        const toolResults = (currentData.content || [])
+          .filter(b => b.type === 'tool_use')
+          .map(b => ({ type: 'tool_result', tool_use_id: b.id, content: JSON.stringify(b.input) }));
+        if (!toolResults.length) break;
+        messages.push({ role: 'user', content: toolResults });
+
+        const next = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'anthropic-dangerous-request-check': 'I-understand-this-is-a-test-API'
+          },
+          body: JSON.stringify({
+            model: 'claude-sonnet-4-20250514',
+            max_tokens: 5000,
+            system: 'You are a LinkedIn intelligence AI. Return valid JSON array only. No markdown.',
+            tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+            messages
+          })
+        });
+        currentData = await next.json();
+      } else break;
+    }
+
+    raw = raw.trim().replace(/```json|```/g,'').trim();
+    const arrMatch = raw.match(/\[[\s\S]*\]/);
+    if (arrMatch) raw = arrMatch[0];
+    const posts = JSON.parse(raw);
+    loading.classList.remove('show');
+    renderPosts(posts);
+  } catch(e) {
+    console.error('LinkedIn error:', e);
+    loading.classList.remove('show');
+    container.innerHTML = '<div class="empty-state"><div class="e-icon">💼</div><p>Could not load posts. Try again.</p></div>';
+  }
+}
+
+function renderPosts(posts) {
+  const container = document.getElementById('linkedinPosts');
+  const typeColors = { job_post: '#60A5FA', hiring: '#6EE7B7', freelance: '#FCD34D', discussion: '#C4B5FD', thought_leadership: '#F9A8D4' };
+  posts.forEach((p, idx) => {
+    const el = document.createElement('div');
+    el.className = 'post-card';
+    el.style.animationDelay = (idx * 0.08) + 's';
+    el.innerHTML = `
+      <div class="post-header">
+        <div class="post-avatar">${p.initials}</div>
+        <div><div class="post-author">${p.author}</div><div class="post-role">${p.role}</div></div>
+        <div class="post-time">${p.time}</div>
+      </div>
+      <div class="post-body">${p.content}</div>
+      <div class="post-tags">${(p.tags||[]).map(t=>`<span class="post-tag">#${t}</span>`).join('')}</div>
+      <div class="post-relevance">
+        <span style="color:${typeColors[p.type]||'#60A5FA'};font-weight:600;font-size:11px;text-transform:uppercase;">${p.type.replace('_',' ')}</span>
+        <span>·</span>
+        <span>${p.relevance}</span>
+        <a href="${p.actionUrl}" target="_blank" style="margin-left:auto;color:var(--accent);font-size:12px;font-weight:600;text-decoration:none;">View →</a>
+      </div>
+    `;
+    container.appendChild(el);
+  });
+}
+
+// ── TRACKER ──
+function addToTracker(title, company, location, salary, status) {
+  trackerItems.unshift({
+    id: Date.now(),
+    title, company,
+    location: location || '',
+    salary: salary || '',
+    status: status || 'saved',
+    date: new Date().toLocaleDateString('en-IN', {day:'2-digit',month:'short'}),
+    url: ''
+  });
+  localStorage.setItem('tracker', JSON.stringify(trackerItems));
+}
+
+function addTrackerItem() {
+  const title = document.getElementById('t-title').value.trim();
+  const company = document.getElementById('t-company').value.trim();
+  if (!title || !company) { showToast('⚠️ Enter title and company'); return; }
+  addToTracker(
+    title, company,
+    document.getElementById('t-location').value,
+    document.getElementById('t-salary').value,
+    document.getElementById('t-status').value
+  );
+  trackerItems[0].url = document.getElementById('t-url').value;
+  localStorage.setItem('tracker', JSON.stringify(trackerItems));
+  ['t-title','t-company','t-location','t-salary','t-url'].forEach(id => document.getElementById(id).value = '');
+  renderTracker();
+  showToast('✅ Added to tracker!');
+}
+
+function deleteTrackerItem(id) {
+  trackerItems = trackerItems.filter(i => i.id !== id);
+  localStorage.setItem('tracker', JSON.stringify(trackerItems));
+  renderTracker();
+}
+
+function updateStatus(id, val) {
+  const item = trackerItems.find(i => i.id === id);
+  if (item) { item.status = val; localStorage.setItem('tracker', JSON.stringify(trackerItems)); renderTracker(); }
+}
+
+function renderTracker() {
+  const counts = { saved:0, applied:0, interview:0, offer:0, rejected:0 };
+  trackerItems.forEach(i => { if (counts[i.status] !== undefined) counts[i.status]++; });
+  document.getElementById('s-saved').textContent = counts.saved;
+  document.getElementById('s-applied').textContent = counts.applied;
+  document.getElementById('s-interview').textContent = counts.interview;
+  document.getElementById('s-offer').textContent = counts.offer;
+
+  const tbody = document.getElementById('trackerBody');
+  const table = document.getElementById('trackerTable');
+  const empty = document.getElementById('trackerEmpty');
+
+  if (!trackerItems.length) {
+    table.style.display = 'none'; empty.style.display = 'block'; return;
+  }
+  table.style.display = 'table'; empty.style.display = 'none';
+
+  tbody.innerHTML = trackerItems.map(i => `
+    <tr>
+      <td><strong>${i.title}</strong></td>
+      <td>${i.company}</td>
+      <td style="color:var(--muted)">${i.location||'—'}</td>
+      <td style="color:var(--muted)">${i.salary||'—'}</td>
+      <td>
+        <select onchange="updateStatus(${i.id},this.value)" style="background:var(--navy);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:4px 8px;font-size:12px;font-family:'DM Sans',sans-serif;">
+          ${['saved','applied','interview','offer','rejected'].map(s=>`<option value="${s}" ${i.status===s?'selected':''}>${s.charAt(0).toUpperCase()+s.slice(1)}</option>`).join('')}
+        </select>
+      </td>
+      <td style="color:var(--muted);font-size:12px">${i.date}</td>
+      <td><button class="btn-del" onclick="deleteTrackerItem(${i.id})">✕</button></td>
+    </tr>
+  `).join('');
+}
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// Init
+renderTracker();
+</script>
+</body>
+</html>
